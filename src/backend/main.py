@@ -31,20 +31,24 @@ async def upload_files(files: List[UploadFile] = File(...)):
         text = "\n".join([p.text for p in doc.paragraphs])
 
         # Find dates using regex
-        # TODO: Make this match more than the simplest of date formats
-        pattern = r"\d{1,2}\/\d{1,2}\/\d{2,4}"
+        # Asked chatGPT for a slightly more robust date amtcher. Still not happy with this but I can test a bit more now
+        pattern = r"\b(?:\d{1,2}/\d{1,2}/\d{4}|\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{1,2}(?:st|nd|rd|th)?(?:, \d{4})?)\b"
         matches = re.finditer(pattern, text)
 
+        print("Document: " + file.filename)
         for match in matches:
             raw_date = match.group(0)
             parsed_date = dateparser.parse(raw_date)
             if not parsed_date:
                 continue
 
+            print("Found date: " + parsed_date.strftime("%m/%d/%Y"))
+
             # Extract a little context around the match
+            # TODO: Strip newlines out of context?
             # TODO: NLP to extract context and/or a title?
-            context_start = max(0, match.start() - 50)
-            context_end = min(len(text), match.end() + 50)
+            context_start = max(0, match.start() - 30)
+            context_end = min(len(text), match.end() + 30)
             context = text[context_start:context_end].strip()
 
 

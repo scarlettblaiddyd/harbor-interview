@@ -1,19 +1,28 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 from pathlib import Path
 import tempfile
 import re
 import dateparser
 from docx import Document
+from models import ExtractedEventResponse
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"], # or * for later
+    allow_credentials=True,
+    allow_methods=["POST"],
+    allow_headers=["*"]
+)
 
 @app.get('/')
 async def root():
     return {'message': 'Hello World'}
 
-@app.post('/upload')
+@app.post('/upload', response_model=ExtractedEventResponse)
 async def upload_files(files: List[UploadFile] = File(...)):
     all_dates = []
 
@@ -52,11 +61,12 @@ async def upload_files(files: List[UploadFile] = File(...)):
             context = text[context_start:context_end].strip()
 
 
-            # TODO: Add a title field?
+            # TODO: Create a title
             # TODO: Can I define/export this event format somewhere for use by the frontend?
             # Need to look into (maybe FastAPI does it automatically?)
             all_dates.append({
                 "date": parsed_date.strftime("%m/%d/%Y"),
+                "title": "Not Implemented",
                 "context": context,
                 "document": file.filename
             })
@@ -64,6 +74,6 @@ async def upload_files(files: List[UploadFile] = File(...)):
         # Optional: delete temporary file
         Path(tmp_path).unlink()
 
-    return {"dates": all_dates}
+    return {"events": all_dates}
 
 

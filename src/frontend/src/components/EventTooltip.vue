@@ -31,6 +31,10 @@ const props = defineProps<{
           {{ context }} <br/>
           {{ documentName }}
         </span>
+        <button class="bg-blue-500 text-white rounded-md p-2 mt-2"
+          @click="router.push(`/document/${documentName}`)">
+          View Document
+        </button>
     </div>
   </Teleport>
 </template>

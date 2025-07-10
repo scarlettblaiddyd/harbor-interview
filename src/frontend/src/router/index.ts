@@ -9,7 +9,7 @@ const router = createRouter ({
       path: '/', component: CalendarView,
     },
     {
-      path: '/document', component: DocumentView
+      path: '/document/:name', component: DocumentView
     }
   ],
   history: createMemoryHistory()

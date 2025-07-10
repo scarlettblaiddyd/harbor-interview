@@ -14,3 +14,8 @@ Initially tried to test my upload function with Postman and was like "ugh okay w
 ## Most functionality implemented, not very pretty though
 Basic functionality of extracting dates and adding them to the calendar widget wasn't too hard. At this point, I was solely focused on functionality, only providing the rougest styling to the UI so that I could test things out, and my date parsing is still incredibly naive, but I have an idea to make it more robust if I get the time. For now, I think I'll add the document viewer page accessible from the calendar widget.
 ![image](./EarlyUglyUI.png)
+
+
+## Some superdoc functionality is not behaving nicely
+Not sure if it's somethign with my tailwind or vue interfering, but I can't get the high contrast mode to work. I can see that class="superdoc high-contrast" is being applied to one of the top level containers, but the text color is always "initial".
+![image](./HighContrast.png)

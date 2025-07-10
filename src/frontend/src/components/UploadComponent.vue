@@ -1,42 +1,45 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { type components } from '../models'
+import { type components } from '@/models'
 import { useEventStore } from '@/stores/eventStore'
+import { useInputFileStore } from '@/stores/fileStore'
+import { RouterLink } from 'vue-router'
+import { NavArrowDownSolid, NavArrowUpSolid } from '@iconoir/vue'
 
 type ExtractedEventResponse = components['schemas']['ExtractedEventResponse']
-type ExtractedEvent = components['schemas']['ExtractedEvent']
 
-const selectedFiles = ref<File[]>([])
-const dates = ref<ExtractedEvent[]>([])
 const eventStore = useEventStore()
+const fileStore = useInputFileStore()
+const showAllFiles = ref<Boolean>(false)
+const DEFAULT_FILES_TO_SHOW = 3
 
+// When user selects files, add them to unprocessed array
+// Overwrite old array, as users might realize they have mis-input a document
+// Or they may select one or more of the same document, and we don't want to double process docs
 function handleFiles(event: Event) {
   const target = event.target as HTMLInputElement
-
   if(!target.files) return
-  selectedFiles.value = Array.from(target.files)
-  console.log(selectedFiles.value.length)
+  fileStore.unprocessed = Array.from(target.files)
 }
 
-
 async function sendFilesForProcessing() {
-  console.log("processing")
+  // TODO: Could try to enforce/validate the data format before sending to api?
   const formData = new FormData()
-  for(const file of selectedFiles.value) {
+  for(const file of fileStore.unprocessed) {
     formData.append("files", file)
   }
 
   try {
-    const res = await fetch("http://localhost:8000/upload", {
+    const res = await fetch(import.meta.env.VITE_DOCX_PARSING_SERVICE_URL, {
       method: "POST",
       body: formData,
     })
 
     const result = await res.json() as ExtractedEventResponse
-    console.log("Dates returned: " + JSON.stringify(result))
-    dates.value = result.events
-    eventStore.events = result.events
-    console.log(result.events[0].date)
+    // Concatonate events so we aren't losing previously processed document events
+    eventStore.events = eventStore.events.concat(result.events)
+    fileStore.processed = fileStore.unprocessed
+    fileStore.unprocessed = []
   } catch(e) {
     console.error(e)
     alert('Failed to upload files or parse dates')
@@ -45,27 +48,32 @@ async function sendFilesForProcessing() {
 </script>
 
 <template>
-  <div class="flex flex-col p-2">
-    <label for="docx-upload" style="cursor: pointer;" class="border p-1 w-fit">Choose Word Documents
-      <input type="file" id="docx-upload" multiple accept=".docx" @change="handleFiles" style="display: none;"/>
-    </label>
-    <div v-for="file of selectedFiles" class="border-b w-fit">
-      {{ file.name }}
+  <div class="flex flex-row w-full justify-between items-center">
+    <div class="flex flex-row justify-start">
+      <div class="flex flex-col p-2">
+      <!-- Custom button/label so that we don't get the ugly, default file input styling -->
+      <label for="docx-upload" style="cursor: pointer;" 
+        class="border p-2 w-fit hover:bg-blue-700 bg-blue-500 text-white rounded-md p-2 mt-2">Choose Word Documents
+        <input type="file" id="docx-upload" multiple accept=".docx" @change="handleFiles" style="display: none;"/>
+      </label>
+      </div>
+      <div  class="flex flex-col">
+        <RouterLink :to="`/document/${file.name}`" v-for="file of (showAllFiles ? fileStore.unprocessed : fileStore.unprocessed.slice(0, DEFAULT_FILES_TO_SHOW))" 
+          class="hover:text-blue-400 hover:!underline">
+          {{ file.name }}
+        </RouterLink>
+        <div v-if="fileStore.unprocessed.length > DEFAULT_FILES_TO_SHOW && !showAllFiles">+{{ fileStore.unprocessed.length - DEFAULT_FILES_TO_SHOW }} more...</div>
+      </div>
+      <button v-if="fileStore.unprocessed.length > DEFAULT_FILES_TO_SHOW" @click="showAllFiles = !showAllFiles">
+        <NavArrowDownSolid v-if="!showAllFiles"></NavArrowDownSolid>
+        <NavArrowUpSolid v-else></NavArrowUpSolid>
+      </button>
     </div>
-  </div>
-
-  <button :disabled="!selectedFiles.length" @click="sendFilesForProcessing" class="border p-1 disabled:bg-gray-500">
-    Add Dates To Calendar
-  </button>
-
-  <div v-if="eventStore.events?.length">
-    <h3>📆 Extracted Dates:</h3>
-    <ul>
-      <li v-for="(d, i) in eventStore.events" :key="i">
-        {{ d.date }} — {{ d.title }} ({{ d.document }})
-        <br />
-        <small>{{ d.context }}</small>
-      </li>
-    </ul>
+    
+    
+    <button :disabled="!fileStore.unprocessed.length" @click="sendFilesForProcessing" 
+      class="w-fit border bg-blue-500 text-white rounded-md p-2 mt-2 disabled:bg-gray-500 hover:bg-blue-700">
+      Add Dates To Calendar
+    </button>
   </div>
 </template>

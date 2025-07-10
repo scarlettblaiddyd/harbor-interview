@@ -7,5 +7,7 @@ type ExtractedEvent = components["schemas"]["ExtractedEvent"]
 export const useEventStore = defineStore('events', () => {
   const events = ref<ExtractedEvent[]>([])
 
-  return { events }
+  const highlightedEvent = ref<ExtractedEvent | null>()
+
+  return { events, highlightedEvent }
 })

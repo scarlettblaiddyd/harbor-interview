@@ -1,5 +1,6 @@
 @import './base.css';
 @import 'tailwindcss';
+@import './spinkit.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

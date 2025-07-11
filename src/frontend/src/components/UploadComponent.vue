@@ -12,6 +12,7 @@ const eventStore = useEventStore()
 const fileStore = useInputFileStore()
 const showAllFiles = ref<Boolean>(false)
 const DEFAULT_FILES_TO_SHOW = 3
+const processing = ref<Boolean>(false)
 
 // When user selects files, add them to unprocessed array
 // Overwrite old array, as users might realize they have mis-input a document
@@ -30,6 +31,7 @@ async function sendFilesForProcessing() {
   }
 
   try {
+    processing.value = true
     const res = await fetch(import.meta.env.VITE_DOCX_PARSING_SERVICE_URL, {
       method: "POST",
       body: formData,
@@ -43,6 +45,8 @@ async function sendFilesForProcessing() {
   } catch(e) {
     console.error(e)
     alert('Failed to upload files or parse dates')
+  } finally {
+    processing.value = false
   }
 }
 </script>
@@ -70,8 +74,17 @@ async function sendFilesForProcessing() {
       </button>
     </div>
     
-    
-    <button :disabled="!fileStore.unprocessed.length" @click="sendFilesForProcessing" 
+    <div v-if="processing" class="fixed inset-0 z-50 bg-black opacity-50 flex items-center justify-center pointer-events-auto">
+      <div class="sk-chase text-blue-500">
+        <div class="sk-chase-dot"></div>
+        <div class="sk-chase-dot"></div>
+        <div class="sk-chase-dot"></div>
+        <div class="sk-chase-dot"></div>
+        <div class="sk-chase-dot"></div>
+        <div class="sk-chase-dot"></div>
+      </div>
+    </div>
+    <button :disabled="(!fileStore.unprocessed.length)" @click="sendFilesForProcessing" 
       class="w-fit border bg-blue-500 text-white rounded-md p-2 mt-2 disabled:bg-gray-500 hover:bg-blue-700">
       Add Dates To Calendar
     </button>

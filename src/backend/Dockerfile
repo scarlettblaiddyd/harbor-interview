@@ -1,4 +1,4 @@
-FROM python:slim-bookworm
+FROM python:3.11-slim-bookworm
 
 WORKDIR /app
 
@@ -11,6 +11,9 @@ COPY pyproject.toml poetry.lock ./
 # Install dependencies
 RUN poetry config virtualenvs.create false \
     && poetry install --no-interaction --no-ansi --only main
+
+# Get NLP package
+RUN poetry run python -m spacy download en_core_web_sm
 
 # Copy backend code
 COPY . .

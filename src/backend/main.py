@@ -70,7 +70,7 @@ def extract_title(sentence: str) -> str:
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "https://scarlettblaiddyd.github.io/harbor-interview"], # or * for later
+    allow_origins=["http://localhost:5173", "https://scarlettblaiddyd.github.io"], # or * for later
     allow_credentials=True,
     allow_methods=["POST"],
     allow_headers=["*"]

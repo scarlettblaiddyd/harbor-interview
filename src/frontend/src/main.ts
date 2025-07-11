@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import './assets/main.css'
 import "@harbour-enterprises/superdoc/style.css"
 

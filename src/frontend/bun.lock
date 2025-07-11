@@ -6,6 +6,8 @@
       "dependencies": {
         "@fullcalendar/core": "^6.1.18",
         "@fullcalendar/daygrid": "^6.1.18",
+        "@fullcalendar/interaction": "^6.1.18",
+        "@fullcalendar/timegrid": "^6.1.18",
         "@fullcalendar/vue3": "^6.1.18",
         "@harbour-enterprises/superdoc": "^0.14.9-rev1",
         "@iconoir/vue": "^7.11.0",
@@ -194,6 +196,10 @@
     "@fullcalendar/core": ["@fullcalendar/core@6.1.18", "", { "dependencies": { "preact": "~10.12.1" } }, "sha512-cD7XtZIZZ87Cg2+itnpsONCsZ89VIfLLDZ22pQX4IQVWlpYUB3bcCf878DhWkqyEen6dhi5ePtBoqYgm5K+0fQ=="],
 
     "@fullcalendar/daygrid": ["@fullcalendar/daygrid@6.1.18", "", { "peerDependencies": { "@fullcalendar/core": "~6.1.18" } }, "sha512-s452Zle1SdMEzZDw+pDczm8m3JLIZzS9ANMThXTnqeqJewW1gqNFYas18aHypJSgF9Fh9rDJjTSUw04BpXB/Mg=="],
+
+    "@fullcalendar/interaction": ["@fullcalendar/interaction@6.1.18", "", { "peerDependencies": { "@fullcalendar/core": "~6.1.18" } }, "sha512-f/mD5RTjzw+Q6MGTMZrLCgIrQLIUUO9NV/58aM2J6ZBQZeRlNizDqmqldqyG+j49zj2vFhUfZibPrVKWm5yA4Q=="],
+
+    "@fullcalendar/timegrid": ["@fullcalendar/timegrid@6.1.18", "", { "dependencies": { "@fullcalendar/daygrid": "~6.1.18" }, "peerDependencies": { "@fullcalendar/core": "~6.1.18" } }, "sha512-T/ouhs+T1tM8JcW7Cjx+KiohL/qQWKqvRITwjol8ktJ1e1N/6noC40/obR1tyolqOxMRWHjJkYoj9fUqfoez9A=="],
 
     "@fullcalendar/vue3": ["@fullcalendar/vue3@6.1.18", "", { "peerDependencies": { "@fullcalendar/core": "~6.1.18", "vue": "^3.0.11" } }, "sha512-YMagwTumxsIx3GFYWLa9Yr73EMA+JuH6S3EeZGS+rEjvG5fDGdf+33rxGMzmw+LdO7SWi3ctbzRnJlv3fnm3RQ=="],
 

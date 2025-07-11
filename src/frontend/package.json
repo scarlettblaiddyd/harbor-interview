@@ -15,6 +15,8 @@
   "dependencies": {
     "@fullcalendar/core": "^6.1.18",
     "@fullcalendar/daygrid": "^6.1.18",
+    "@fullcalendar/interaction": "^6.1.18",
+    "@fullcalendar/timegrid": "^6.1.18",
     "@fullcalendar/vue3": "^6.1.18",
     "@harbour-enterprises/superdoc": "^0.14.9-rev1",
     "@iconoir/vue": "^7.11.0",

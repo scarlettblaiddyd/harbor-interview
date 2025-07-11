@@ -1,1 +1,0 @@
-Scarlett's harbor take-home interview solution

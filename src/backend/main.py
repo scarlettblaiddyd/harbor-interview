@@ -11,7 +11,7 @@ import spacy
 from docx import Document
 from models import ExtractedEventResponse
 
-nlp = spacy.load("en_core_web_sm")
+nlp = spacy.load("en_core_web_lg")
 
 # This function was written mostly by AI, I'm not very familiar with NLP
 # It seems to produce usable results, and is certainly better than my earlier implementation
@@ -101,22 +101,17 @@ async def upload_files(files: List[UploadFile] = File(...)):
         # But provides much more useful information
         paragraphs = [p.text.strip() for p in doc.paragraphs if p.text.strip()]
         for paragraph in paragraphs:
-            spacy_doc = nlp(paragraph)
+            matches = list(datefinder.find_dates(paragraph, strict=True))
 
-            for ent in spacy_doc.ents:
-                if ent.label_ in ("DATE", "TIME"):
-                    parsed = dateparser.parse(ent.text)
-                    if not parsed:
-                        continue
+            for match in matches:
+                title = extract_title(paragraph)
 
-                    title = extract_title(paragraph)
-
-                    events.append({
-                        "date": parsed.strftime("%m/%d/%Y"),
-                        "title": title,
-                        "context": paragraph,
-                        "document": file.filename
-                    })
+                events.append({
+                    "date": match.strftime("%m/%d/%Y"),
+                    "title": title,
+                    "context": paragraph,
+                    "document": file.filename
+                })
         # Delete temporary file
         Path(tmp_path).unlink()
 

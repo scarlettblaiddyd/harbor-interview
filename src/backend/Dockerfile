@@ -13,7 +13,7 @@ RUN poetry config virtualenvs.create false \
     && poetry install --no-interaction --no-ansi --only main
 
 # Get NLP package
-RUN poetry run python -m spacy download en_core_web_sm
+RUN poetry run python -m spacy download en_core_web_lg
 
 # Copy backend code
 COPY . .

@@ -11,7 +11,7 @@ import spacy
 from docx import Document
 from models import ExtractedEventResponse
 
-nlp = spacy.load("en_core_web_lg")
+nlp = spacy.load("en_core_web_sm")
 
 # This function was written mostly by AI, I'm not very familiar with NLP
 # It seems to produce usable results, and is certainly better than my earlier implementation
